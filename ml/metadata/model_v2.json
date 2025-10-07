@@ -1,0 +1,7 @@
+{
+    "model_version": "2",
+    "mean_absolute_error": 3.05013292919828,
+    "mean_squared_error": 15.94389945088331,
+    "root_mean_squared_error": 3.9929812735452828,
+    "r2_score": 0.8117465620558446
+}
