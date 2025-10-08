@@ -15,6 +15,7 @@ from ml.utils.time import measure_time
 
 logger = get_logger("training")
 
+
 @measure_time
 def load_and_prepare_data(
     filepath: str, target_column: str
@@ -32,8 +33,14 @@ def load_and_prepare_data(
     logger.info(f"Loading data from {filepath}")
     try:
         df = pd.read_csv(filepath)
-        df.dropna(inplace=True)
 
+        # df.head()
+        # df.info()
+        # df.describe()
+        # df.isnull().sum()
+        # df.duplicated().sum()
+
+        df.dropna(inplace=True)
         X = df.drop(columns=[target_column])
         y = df[target_column]
 
@@ -124,6 +131,6 @@ def evaluate_model(
         "root_mean_squared_error": rmse,
         "r2_score": r2,
     }
-    save_json(results, results_path, logger)
+    save_json(results, results_path)
 
     logger.info(f"Evaluation saved at {results_path}")

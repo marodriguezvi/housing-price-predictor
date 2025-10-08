@@ -4,8 +4,10 @@ from commont.logger import get_logger
 
 logger = get_logger("training")
 
+
 def measure_time(func):
     """Decorator to measure execution time of a function."""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.perf_counter_ns()
@@ -25,4 +27,5 @@ def measure_time(func):
 
         logger.info(f"Function '{func.__name__}' executed in {elapsed_str}")
         return result
+
     return wrapper
