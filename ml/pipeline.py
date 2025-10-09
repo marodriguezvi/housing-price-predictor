@@ -1,4 +1,4 @@
-from commont.logger import get_logger
+from common.logger import get_logger
 from ml.ml_workflow import (
     load_and_prepare_data,
     train_and_save_model,

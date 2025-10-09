@@ -1,5 +1,6 @@
-import json
 from pathlib import Path
+from ml.utils.io import load_json
+from common.files import get_latest_version_file
 
 
 def test_model_performance_threshold():
@@ -7,12 +8,11 @@ def test_model_performance_threshold():
     metadata_dir = Path("ml/metadata")
     assert metadata_dir.exists()
 
-    files = sorted(metadata_dir.glob("model_*.json"))
-    assert files
-    results_path = files[-1]
+    results_path = get_latest_version_file(
+        str(metadata_dir), base_name="model", extension="json"
+    )
 
-    with open(results_path, "r") as f:
-        results = json.load(f)
+    results = load_json(results_path)
 
     assert results["r2_score"] > 0.60
     assert results["root_mean_squared_error"] < 6.0
