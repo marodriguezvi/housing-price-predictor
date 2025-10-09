@@ -9,14 +9,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from ml.utils.io import save_json
-from commont.logger import get_logger
-from ml.utils.time import measure_time
+from common.logger import get_logger
+from common.time import measure_time
 
 
 logger = get_logger("training")
 
 
-@measure_time
+@measure_time(logger)
 def load_and_prepare_data(
     filepath: str, target_column: str
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
@@ -54,7 +54,7 @@ def load_and_prepare_data(
         raise e
 
 
-@measure_time
+@measure_time(logger)
 def train_and_save_model(
     X_train: pd.DataFrame, y_train: pd.Series, version: str = None
 ) -> None:
@@ -73,7 +73,7 @@ def train_and_save_model(
 
         version = version or get_next_version()
         model_name = f"model_{version}"
-        output_path = Path(f"ml/models/{model_name}.pkl")
+        output_path = Path(f"ml/artifacts/{model_name}.pkl")
         joblib.dump(model, output_path)
 
         logger.info(f"Model saved at {output_path}")
@@ -90,7 +90,7 @@ def get_next_version() -> str:
     Returns:
         str: Next version label (e.g., "v2" if "model_v1.pkl" exists).
     """
-    models_dir = Path("ml/models")
+    models_dir = Path("ml/artifacts")
     models_dir.mkdir(parents=True, exist_ok=True)
     versions = [
         int(p.stem.split("_v")[-1]) for p in models_dir.glob("model_v*.pkl")
@@ -98,7 +98,7 @@ def get_next_version() -> str:
     return f"v{max(versions) + 1}" if versions else "v1"
 
 
-@measure_time
+@measure_time(logger)
 def evaluate_model(
     model: LinearRegression,
     X_test: pd.DataFrame,

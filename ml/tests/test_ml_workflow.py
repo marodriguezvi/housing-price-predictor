@@ -3,12 +3,12 @@ from pathlib import Path
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
+from ml.utils.io import load_json
 from ml.ml_workflow import (
     load_and_prepare_data,
     train_and_save_model,
     evaluate_model,
 )
-from ml.utils.io import load_json
 
 
 def test_load_and_prepare_data(tmp_path):
@@ -41,7 +41,7 @@ def test_train_and_save_model(tmp_path, monkeypatch):
     """Train a model and ensure the artifact is saved with the expected version."""
     monkeypatch.chdir(tmp_path)
 
-    models_dir = tmp_path / "ml" / "models"
+    models_dir = tmp_path / "ml" / "artifacts"
     models_dir.mkdir(parents=True)
     (models_dir / "model_v1.pkl").write_text("dummy")
 
@@ -53,7 +53,7 @@ def test_train_and_save_model(tmp_path, monkeypatch):
     assert model is not None
     assert model_name.startswith("model_v")
 
-    saved_path = Path("ml/models") / f"{model_name}.pkl"
+    saved_path = Path("ml/artifacts") / f"{model_name}.pkl"
     assert saved_path.exists()
 
 
