@@ -1,41 +1,48 @@
 #!/bin/bash
+# ===============================================
+# Model Deployment Script
+# Copies the latest trained model from ml/artifacts
+# to app/artifacts for application use.
+# ===============================================
+
 set -e
 
-# Paths
-MODEL_DIR="artifacts/models"
-APP_ENV_FILE=".env"
-APP_MODEL_PATH="app/models/current_model.pkl"
+PROJECT_DIR="$(pwd)"
+MODEL_SOURCE_DIR="$PROJECT_DIR/ml/artifacts"
+MODEL_DEST_DIR="$PROJECT_DIR/app/artifacts"
 
-# Get latest model by modification date
-LATEST_MODEL=$(ls -t $MODEL_DIR/model_*.pkl | head -n 1)
-
-echo "🚀 Deploying latest model: $LATEST_MODEL"
-
-# Copy latest model to app models directory
-cp "$LATEST_MODEL" "$APP_MODEL_PATH"
-
-# Extract version number from filename
-MODEL_VERSION=$(basename "$LATEST_MODEL" | sed 's/model_\(.*\)\.pkl/\1/')
-
-# Update environment variable in .env file
-if grep -q "^MODEL_VERSION=" "$APP_ENV_FILE"; then
-    sed -i "s/^MODEL_VERSION=.*/MODEL_VERSION=$MODEL_VERSION/" "$APP_ENV_FILE"
-else
-    echo "MODEL_VERSION=$MODEL_VERSION" >> "$APP_ENV_FILE"
+# Verify source directory exists
+if [ ! -d "$MODEL_SOURCE_DIR" ]; then
+    echo "Model source directory does not exist: $MODEL_SOURCE_DIR"
+    exit 1
 fi
 
-echo "✅ Model version updated to: $MODEL_VERSION"
+# Find the latest model by version number
+LATEST_MODEL=$(ls "$MODEL_SOURCE_DIR"/model_v*.pkl 2>/dev/null | sort -V | tail -n 1)
 
-# Restart app service (assuming using gunicorn or flask in background)
-if pgrep -f "gunicorn" > /dev/null; then
-    echo "🔁 Restarting Gunicorn..."
-    pkill -HUP -f "gunicorn"
-elif pgrep -f "flask run" > /dev/null; then
-    echo "🔁 Restarting Flask app..."
-    pkill -f "flask run"
-    nohup flask run --host=0.0.0.0 --port=5000 > flask.log 2>&1 &
-else
-    echo "⚠️ No running app detected — skipping restart."
+if [ -z "$LATEST_MODEL" ]; then
+    echo "No model found in $MODEL_SOURCE_DIR"
+    exit 1
 fi
 
-echo "✅ Deployment completed successfully!"
+echo "Latest model found: $(basename "$LATEST_MODEL")"
+
+mkdir -p "$MODEL_DEST_DIR"
+
+cp "$LATEST_MODEL" "$MODEL_DEST_DIR/"
+echo "Model copied to $MODEL_DEST_DIR"
+
+# Activate virtual environment if available
+# if [ -d "$PROJECT_DIR/venv" ]; then
+#     source "$PROJECT_DIR/venv/bin/activate"
+# else
+#     echo "Virtual environment not found in $PROJECT_DIR/venv"
+# fi
+
+# Optional: restart app server if needed
+# pkill -f "flask run" || true
+# nohup flask --app app run &
+
+# systemctl restart housing_app.service
+
+echo "Deployment completed successfully"
