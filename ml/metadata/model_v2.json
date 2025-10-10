@@ -1,7 +1,7 @@
 {
     "model_version": "2",
-    "mean_absolute_error": 3.322865977265323,
-    "mean_squared_error": 26.63704395777865,
-    "root_mean_squared_error": 5.161108791507756,
-    "r2_score": 0.6794475463318128
+    "mean_absolute_error": 3.3695562430660657,
+    "mean_squared_error": 22.932681822117313,
+    "root_mean_squared_error": 4.788807975072431,
+    "r2_score": 0.6858037435588332
 }

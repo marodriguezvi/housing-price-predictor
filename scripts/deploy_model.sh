@@ -1,48 +1,67 @@
 #!/bin/bash
 # ===============================================
 # Model Deployment Script
-# Copies the latest trained model from ml/artifacts
-# to app/artifacts for application use.
+# Copies a trained model (.pkl) from ml/artifacts to app/artifacts.
+# You can provide a specific filename as an argument,
+# or let the script automatically pick the latest version.
 # ===============================================
 
-set -e
+set -euo pipefail
 
+# Directories
 PROJECT_DIR="$(pwd)"
 MODEL_SOURCE_DIR="$PROJECT_DIR/ml/artifacts"
 MODEL_DEST_DIR="$PROJECT_DIR/app/artifacts"
 
-# Verify source directory exists
-if [ ! -d "$MODEL_SOURCE_DIR" ]; then
-    echo "Model source directory does not exist: $MODEL_SOURCE_DIR"
+# Help message
+show_help() {
+    echo "Usage: $(basename "$0") [MODEL_FILENAME]"
+    echo
+    echo "If MODEL_FILENAME is omitted, the script will copy the latest"
+    echo "file matching model_v*.pkl from:"
+    echo "  $MODEL_SOURCE_DIR"
+    echo "to:"
+    echo "  $MODEL_DEST_DIR"
+}
+
+# Handle help flag
+if [[ "${1-}" =~ ^(-h|--help)$ ]]; then
+    show_help
+    exit 0
+fi
+
+# Validate source directory
+if [[ ! -d "$MODEL_SOURCE_DIR" ]]; then
+    echo "Source directory not found: $MODEL_SOURCE_DIR"
     exit 1
 fi
 
-# Find the latest model by version number
-LATEST_MODEL=$(ls "$MODEL_SOURCE_DIR"/model_v*.pkl 2>/dev/null | sort -V | tail -n 1)
+# Determine which model to copy
+if [[ $# -ge 1 ]]; then
+    MODEL_NAME="$1"
 
-if [ -z "$LATEST_MODEL" ]; then
-    echo "No model found in $MODEL_SOURCE_DIR"
-    exit 1
+    if [[ -f "$MODEL_NAME" ]]; then
+        SELECTED_MODEL="$MODEL_NAME"
+    elif [[ -f "$MODEL_SOURCE_DIR/$MODEL_NAME" ]]; then
+        SELECTED_MODEL="$MODEL_SOURCE_DIR/$MODEL_NAME"
+    else
+        echo "Model file not found: $MODEL_NAME"
+        echo "Checked: $MODEL_NAME and $MODEL_SOURCE_DIR/$MODEL_NAME"
+        exit 1
+    fi
+else
+    SELECTED_MODEL=$(ls "$MODEL_SOURCE_DIR"/model_v*.pkl 2>/dev/null | sort -V | tail -n 1 || true)
+    if [[ -z "$SELECTED_MODEL" ]]; then
+        echo "No model found in $MODEL_SOURCE_DIR"
+        exit 1
+    fi
 fi
 
-echo "Latest model found: $(basename "$LATEST_MODEL")"
+# Copy the model
+echo "Selected model: $(basename "$SELECTED_MODEL")"
 
 mkdir -p "$MODEL_DEST_DIR"
+cp "$SELECTED_MODEL" "$MODEL_DEST_DIR/"
 
-cp "$LATEST_MODEL" "$MODEL_DEST_DIR/"
-echo "Model copied to $MODEL_DEST_DIR"
-
-# Activate virtual environment if available
-# if [ -d "$PROJECT_DIR/venv" ]; then
-#     source "$PROJECT_DIR/venv/bin/activate"
-# else
-#     echo "Virtual environment not found in $PROJECT_DIR/venv"
-# fi
-
-# Optional: restart app server if needed
-# pkill -f "flask run" || true
-# nohup flask --app app run &
-
-# systemctl restart housing_app.service
-
-echo "Deployment completed successfully"
+echo "Model copied to: $MODEL_DEST_DIR"
+echo "Deployment completed successfully!"

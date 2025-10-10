@@ -42,13 +42,51 @@ By default Flask binds to 127.0.0.1:5000. Set `FLASK_RUN_HOST=0.0.0.0` if you ne
 
 ## Run the training pipeline
 
-Train and build the model using the project's pipeline module:
+Train and build the model using the project's pipeline module. The pipeline supports these CLI options:
+
+- `--data-path` PATH (default: `data/HousingData.csv`)
+- `--target` NAME (default: `MEDV`)
+- `--version` LABEL (optional, e.g. `v2`)
+
+Examples:
+
+Run with defaults:
 
 ```bash
 python -m ml.pipeline
 ```
 
-This will run the pipeline code defined in `ml/pipeline.py` and should produce model artifacts under `ml/artifacts/` and defines the model metrics in `ml/metadata/`.
+Run with custom dataset/target/version:
+
+```bash
+python -m ml.pipeline --data-path data/my_data.csv --target PRICE --version v3
+```
+
+Or use the helper script (positional args: DATA_PATH TARGET VERSION):
+
+```bash
+./scripts/train_model.sh [DATA_PATH] [TARGET] [VERSION]
+```
+
+## Run deploy script
+
+Copy a packaged model into the application's artifacts folder. The deploy script supports this positional option:
+
+- `MODEL_NAME` NAME (optional) — filename (basename) located in `ml/artifacts` (e.g. `model_v2.pkl`). If omitted the script copies the latest `model_v*.pkl` from `ml/artifacts`.
+
+Examples:
+
+Deploy latest (default):
+
+```bash
+./scripts/deploy_model.sh
+```
+
+Deploy specific model by name:
+
+```bash
+./scripts/deploy_model.sh model_v2.pkl
+```
 
 ## Run tests
 
@@ -60,16 +98,7 @@ pytest -v
 
 There are tests located in `app/tests/` and `ml/tests/`.
 
-## Run maintenance scripts
 
-Two helper scripts are provided:
-
-```bash
-bash scripts/train_model.sh
-bash scripts/deploy_model.sh
-```
-
-Use `train_model.sh` to run a scripted training flow. Use `deploy_model.sh` to copy artifacts to their deployment location.
 
 ## Docker
 

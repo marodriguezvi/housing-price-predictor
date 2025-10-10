@@ -3,7 +3,7 @@ import pandas as pd
 from app.models.regression_model import RegressionModel
 
 
-def test_regression_model_interface(monkeypatch):
+def test_regression_model_exposes_expected_interface(monkeypatch):
     """Verify that RegressionModel exposes the expected interface."""
     model = RegressionModel()
     monkeypatch.setattr(model, "load", lambda: None)
