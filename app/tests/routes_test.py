@@ -2,7 +2,7 @@ from app import create_app
 import app.routes.predict as predict_module
 
 
-def test_predict_route_happy_path(monkeypatch):
+def test_predict_route_prediction_success(monkeypatch):
     """Verify that the endpoint returns a valid prediction."""
     valid_input = {
         "CRIM": 0.00632,

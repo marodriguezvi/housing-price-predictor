@@ -3,7 +3,7 @@ from ml.utils.io import load_json
 from common.files import get_latest_version_file
 
 
-def test_model_performance_threshold():
+def test_model_meets_minimum_performance_threshold():
     """Ensure the model meets minimum performance requirements."""
     metadata_dir = Path("ml/metadata")
     assert metadata_dir.exists()

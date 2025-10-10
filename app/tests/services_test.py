@@ -16,7 +16,7 @@ class DummyModel:
         return [float(X.iloc[0].sum())]
 
 
-def test_prediction_service_returns_float(monkeypatch):
+def test_prediction_service_returns_float_prediction(monkeypatch):
     """Test that PredictionService returns a float prediction."""
     dummy = DummyModel()
     service = PredictionService(dummy)

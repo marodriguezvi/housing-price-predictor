@@ -1,7 +1,7 @@
 from app.schemas.predict import HouseInput
 
 
-def test_house_input_valid():
+def test_house_input_valid_data():
     """Verify that HouseInput accepts valid data."""
     valid_input = {
         "CRIM": 0.00632,
@@ -23,7 +23,7 @@ def test_house_input_valid():
     assert obj.CRIM == 0.00632
 
 
-def test_house_input_invalid_negative_crim():
+def test_house_input_invalid_negative_parameters():
     """Verify that HouseInput rejects invalid data."""
     invalid = {
         "CRIM": -0.1,

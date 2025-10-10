@@ -11,7 +11,7 @@ from ml.ml_workflow import (
 )
 
 
-def test_load_and_prepare_data(tmp_path):
+def test_load_and_prepare_data_success(tmp_path):
     """Ensure CSV is loaded, cleaned, and split correctly."""
     df = pd.DataFrame(
         {
@@ -37,7 +37,7 @@ def test_load_and_prepare_data(tmp_path):
     assert y_train.shape[0] + y_test.shape[0] == df.shape[0]
 
 
-def test_train_and_save_model(tmp_path, monkeypatch):
+def test_train_and_save_model_success(tmp_path, monkeypatch):
     """Train a model and ensure the artifact is saved with the expected version."""
     monkeypatch.chdir(tmp_path)
 
@@ -57,7 +57,7 @@ def test_train_and_save_model(tmp_path, monkeypatch):
     assert saved_path.exists()
 
 
-def test_evaluate_model(tmp_path, monkeypatch):
+def test_evaluate_model_success(tmp_path, monkeypatch):
     """Evaluate a trained model and assert metrics JSON have been created."""
     monkeypatch.chdir(tmp_path)
 
