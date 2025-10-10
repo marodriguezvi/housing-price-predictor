@@ -28,7 +28,8 @@ def test_load_and_prepare_data(tmp_path):
         str(csv_path), "price"
     )
 
-    assert hasattr(X_train, "shape")
+    assert hasattr(X_train, 
+                   "shape")
     assert hasattr(X_test, "shape")
     assert hasattr(y_train, "shape")
     assert hasattr(y_test, "shape")
