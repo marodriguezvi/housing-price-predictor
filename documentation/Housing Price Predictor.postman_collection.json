@@ -1,0 +1,356 @@
+{
+	"info": {
+		"_postman_id": "f42670e1-80a5-482b-9da7-009be0caef6b",
+		"name": "Housing Price Predictor",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5529436"
+	},
+	"item": [
+		{
+			"name": "Predict",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"CRIM\": 0.00632,\n    \"ZN\": 18.0,\n    \"INDUS\": 2.31,\n    \"CHAS\": 0,\n    \"NOX\": 0.538,\n    \"RM\": 6.575,\n    \"AGE\": 65.2,\n    \"DIS\": 4.09,\n    \"RAD\": 1,\n    \"TAX\": 296.0,\n    \"PTRATIO\": 15.3,\n    \"B\": 396.9,\n    \"LSTAT\": 4.98\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/predict",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful prediction",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"CRIM\": 0.00632,\n    \"ZN\": 18.0,\n    \"INDUS\": 2.31,\n    \"CHAS\": 0,\n    \"NOX\": 0.538,\n    \"RM\": 6.575,\n    \"AGE\": 65.2,\n    \"DIS\": 4.09,\n    \"RAD\": 1,\n    \"TAX\": 296.0,\n    \"PTRATIO\": 15.3,\n    \"B\": 396.9,\n    \"LSTAT\": 4.98\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/predict",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"predict"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.12"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 09 Oct 2025 03:02:20 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "34"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"prediction\": 29.557198852056562\n}"
+				},
+				{
+					"name": "Error body request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"CRIM\": 0.00632,\n    \"ZN\": 18.0,\n    \"INDUS\": 2.31,\n    \"CHAS\": 0,\n    \"NOX\": -0.538,\n    \"RM\": 6.575,\n    \"AGE\": 65.2,\n    \"DIS\": 4.09,\n    \"RAD\": 1,\n    \"TAX\": 296.0,\n    \"PTRATIO\": 15.3,\n    \"B\": 396.9,\n    \"LSTAT\": 4.98\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/predict",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"predict"
+							]
+						}
+					},
+					"status": "BAD REQUEST",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.12"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 09 Oct 2025 03:03:46 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "177"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": [\n        {\n            \"ctx\": {\n                \"gt\": 0\n            },\n            \"input\": -0.538,\n            \"loc\": [\n                \"NOX\"\n            ],\n            \"msg\": \"Input should be greater than 0\",\n            \"type\": \"greater_than\",\n            \"url\": \"https://errors.pydantic.dev/2.11/v/greater_than\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Home",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}",
+					"host": [
+						"{{base_url}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful prediction",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"CRIM\": 0.00632,\n    \"ZN\": 18.0,\n    \"INDUS\": 2.31,\n    \"CHAS\": 0,\n    \"NOX\": 0.538,\n    \"RM\": 6.575,\n    \"AGE\": 65.2,\n    \"DIS\": 4.09,\n    \"RAD\": 1,\n    \"TAX\": 296.0,\n    \"PTRATIO\": 15.3,\n    \"B\": 396.9,\n    \"LSTAT\": 4.98\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/predict",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"predict"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.12"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 09 Oct 2025 03:02:20 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "34"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"prediction\": 29.557198852056562\n}"
+				},
+				{
+					"name": "Error body request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"CRIM\": 0.00632,\n    \"ZN\": 18.0,\n    \"INDUS\": 2.31,\n    \"CHAS\": 0,\n    \"NOX\": -0.538,\n    \"RM\": 6.575,\n    \"AGE\": 65.2,\n    \"DIS\": 4.09,\n    \"RAD\": 1,\n    \"TAX\": 296.0,\n    \"PTRATIO\": 15.3,\n    \"B\": 396.9,\n    \"LSTAT\": 4.98\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/predict",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"predict"
+							]
+						}
+					},
+					"status": "BAD REQUEST",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.12"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 09 Oct 2025 03:03:46 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "177"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": [\n        {\n            \"ctx\": {\n                \"gt\": 0\n            },\n            \"input\": -0.538,\n            \"loc\": [\n                \"NOX\"\n            ],\n            \"msg\": \"Input should be greater than 0\",\n            \"type\": \"greater_than\",\n            \"url\": \"https://errors.pydantic.dev/2.11/v/greater_than\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "Server up",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.12"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 09 Oct 2025 03:07:50 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/html; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "43"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "Welcome to the Housing Price Predictor API!"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		}
+	]
+}

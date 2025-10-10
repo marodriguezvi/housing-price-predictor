@@ -1,0 +1,121 @@
+name: Test and Build
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  format-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Format py
+        run: black --diff --check .
+      - name: Test with pytest
+        run: pytest -v --ignore=ml/tests/test_model_performance.py
+
+  train-and-build-artifact:
+    runs-on: ubuntu-latest
+    needs: format-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Train and build model
+        run: python -m ml.pipeline
+      - name: Upload model artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-artifacts
+          path: |
+            ml/artifacts/
+            ml/metadata/
+
+  validate-model:
+    runs-on: ubuntu-latest
+    needs: train-and-build-artifact
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Download model artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: model-artifacts
+          path: ml/
+      - name: Install test requirements
+        run: pip install pytest
+      - name: Run model performance tests (using trained artifact)
+        run: pytest -q ml/tests/test_model_performance.py
+
+  build-app:
+    runs-on: ubuntu-latest
+    needs: validate-model
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download model artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: model-artifacts
+          path: ml/
+
+      - name: List downloaded artifacts (debug)
+        run: |
+          echo "Contents of ml/artifacts:" 
+          ls -la ml/artifacts || true
+
+      - name: Copy model to app artifacts
+        run: |
+          mkdir -p app/artifacts
+          cp -r ml/artifacts/* app/artifacts/ || true
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image to GHCR
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ghcr.io/marodriguezvi/housing-price-predictor:latest
+
+      - name: Build and start services (local)
+        run: docker-compose up --build -d || true
