@@ -17,7 +17,7 @@ def get_logger(name: str) -> logging.Logger:
     """
     default_dir = os.path.join(Path(__file__).resolve().parents[1], "logs")
     log_dir = os.getenv("LOG_DIR", default_dir)
-    Path(log_dir).parent.mkdir(parents=True, exist_ok=True)
+    Path(log_dir).mkdir(parents=True, exist_ok=True)
     log_file = os.path.join(log_dir, f"{name}.log")
 
     logger = logging.getLogger(name)
