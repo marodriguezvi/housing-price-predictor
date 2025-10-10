@@ -49,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Train and build model
-        run: python ml/pipeline.py
+        run: python -m ml.pipeline
       - name: Upload model artifacts
         uses: actions/upload-artifact@v4
         with:
