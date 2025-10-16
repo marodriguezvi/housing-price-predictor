@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  gunicorn:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask_app_prod
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: always
