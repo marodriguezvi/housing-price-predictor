@@ -10,9 +10,7 @@ def create_app(test_config=None):
     if test_config is not None:
         app.config.update(test_config)
 
-    app.register_blueprint(
-        predict_bp
-        )
+    app.register_blueprint(predict_bp)
 
     @app.route("/", methods=["GET"])
     def home():
